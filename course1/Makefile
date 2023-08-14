@@ -11,14 +11,19 @@
 
 #------------------------------------------------------------------------------
 # Makefile to create the microcontroller applications for the Embedded Course
+# with the memory manipulation functions
 #
 # Use: make [TARGET] [PLATFORM-OVERRIDES]
 #
+# Switches :
+#      COURSE1	enables course1(), the test function
+#      VERBOSE	enable the output of arrays
+#
 # Build Targets:
-#       <FILE>.i - Builds <FILE>.i preprocessed output of <FILE>.c
-#       <FILE>.asm - Builds <FILE>.asm assembly output of <FILE>.C
-#       <FILE>.o - Buids <FILE>.o object file for <FILE>.c
-#       compile-all - Compiles all object files, but DO NOT link
+#      <FILE>.i - Builds <FILE>.i preprocessed output of <FILE>.c
+#      <FILE>.asm - Builds <FILE>.asm assembly output of <FILE>.C
+#      <FILE>.o - Buids <FILE>.o object file for <FILE>.c
+#      compile-all - Compiles all object files, but DO NOT link
 #      build - Compile all object files and link into a final executable.
 #      all
 #      clean - Removes all generated files
@@ -42,6 +47,30 @@ ifeq ($(filter HOST MSP432, $(PLATFORM)),)
   echo $(ERROR_MSG)
 endif
 
+# Check if course1() must be enabled (COURSES == 1)
+ifdef COURSE1
+  ifeq ($(COURSE1),1)
+    COURSE1_FLAG = -DCOURSE1
+  else
+    COURSE1_FLAG =
+  endif
+else
+  COURSE1_FLAG =
+endif
+
+# Check if verbos mode
+ifdef VERBOSE
+  ifeq ($(VERBOSE),1)
+    VERBOSE_FLAG = -DVERBOSE
+  else
+    VERBOSE_FLAG =
+  endif
+else
+  VERBOSE_FLAG =
+endif
+
+OPTIONAL_FLAGS = $(COURSE1_FLAG) $(VERBOSE_FLAG)
+
 include sources.mk
 
 #------------------------------------------------------------------------------
@@ -52,14 +81,14 @@ ifeq ($(PLATFORM),MSP432)
   CPU = cortex-m4
   ARCH = thumb
   SPECS = nosys.specs
-  CFLAGS = -DMSP432 -mcpu=$(CPU) -m$(ARCH) --specs=$(SPECS) $(INCLUDES)
+  CFLAGS = -DMSP432 -mcpu=$(CPU) -m$(ARCH) --specs=$(SPECS) $(INCLUDES) $(OPTIONAL_FLAGS)
   SIZEPRG = arm-none-eabi-size
   LINKER_FILE_FLAG = -T ../msp432p401r.lds
   OBJDUMP = arm-none-eabi-objdump
   SIZECMD = arm-none-eabi-size
 else
   CC = gcc
-  CFLAGS = -DHOST $(INCLUDES)
+  CFLAGS = -DHOST $(INCLUDES) $(OPTIONAL_FLAGS)
   SIZEPRG = size
   LINKER_FILE_FLAG =
   OBJDUMP = objdump
@@ -68,7 +97,7 @@ endif
 
 #------------------------------------------------------------------------------
 # common FLAGS
-TARGET = c1m2
+TARGET = src/c1m4
 LD =
 LDFLAGS = -Wl,-Map=$(TARGET).map $(LINKER_FILE_FLAG)
 CPPFLAGS = -E
@@ -95,7 +124,7 @@ build: compile-all
 	$(SIZECMD)  $(TARGET).out
 
 clean:
-	rm -f *.o *.i *.s *.asm *.d $(TARGET).out $(TARGET).map
+	rm -f src/*.o src/*.i src/*.s src/*.asm src/*.d $(TARGET).out $(TARGET).map
 
 #------------------------------------------------------------------------------
 # Generic targets

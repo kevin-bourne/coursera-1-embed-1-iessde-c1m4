@@ -8,11 +8,37 @@
 # misuse of this material.
 #
 #*****************************************************************************
+#
+# @file sources.mk
+# @brief Define the sources for c1m4
+# @author Kevin Bourne
+# @date 14.08.2023
+#
+#*****************************************************************************
+
+ifdef COURSE1_FLAG
+  COURSE1_SOURCES = src/course1.c
+else
+  COURSE1_SOURCES =
+endif
+
+COMMON_SOURCES = \
+	src/main.c \
+	src/memory.c \
+	$(COURSE1_SOURCES)
 
 ifeq ($(PLATFORM),MSP432)
-  SOURCES = main.c memory.c interrupts_msp432p401r_gcc.c startup_msp432p401r_gcc.c system_msp432p401r.c
-  INCLUDES = -I../include/common  -I../include/msp432 -I../include/CMSIS
+  SOURCES = \
+		$(COMMON_SOURCES) \
+		src/interrupts_msp432p401r_gcc.c \
+		srcstartup_msp432p401r_gcc.c \
+		system_msp432p401r.c
+
+  INCLUDES = \
+		-Iinclude/common \
+		-Iinclude/msp432 \
+		-Iinclude/CMSIS
 else
-  SOURCES = main.c memory.c
-  INCLUDES = -I../include/common
+  SOURCES = $(COMMON_SOURCES)
+  INCLUDES = -Iinclude/common
 endif

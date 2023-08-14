@@ -20,6 +20,8 @@
  * @date April 1 2017
  *
  */
+#include <stddef.h>
+#include <stdint.h>
 #include "memory.h"
 
 /***********************************************************
@@ -48,3 +50,33 @@ void clear_all(char * ptr, unsigned int size){
   set_all(ptr, 0, size);
 }
 
+/***********************************************************
+ Memory manipulation functions
+***********************************************************/
+uint8_t* my_memmove(uint8_t * src, uint8_t * dst, size_t length) {
+  return NULL;
+}
+
+uint8_t * my_memcopy(uint8_t * src, uint8_t * dst, size_t length) {
+  return NULL;
+}
+
+uint8_t * my_memset(uint8_t * src, size_t length, uint8_t value) {
+  return NULL;
+}
+
+uint8_t * my_memzero(uint8_t * src, size_t length) {
+  return NULL;
+}
+
+uint8_t * my_reverse(uint8_t * src, size_t length) {
+  return NULL;
+}
+
+int32_t * reserve_words(size_t length) {
+  return NULL;
+}
+
+void free_words(int32_t * src) {
+  return;
+}

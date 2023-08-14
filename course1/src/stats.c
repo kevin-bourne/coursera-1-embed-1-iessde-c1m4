@@ -69,6 +69,7 @@ void print_statistics(uchar* arr, size_t arr_size) {
 /* -------------------------------------------------------------------------- */
 /* Prints an array to the screen */
 void print_array(uchar* arr, size_t arr_size) {
+#ifdef VERBOSE
   printf("-----------------\n");
   printf("Array\n");
   printf("-----------------\n");
@@ -90,6 +91,9 @@ void print_array(uchar* arr, size_t arr_size) {
     }
   }
   printf("\n");
+#else
+  printf("VEROSE is not defined => print_array is disabled\n");
+#endif
 }
 
 /* -------------------------------------------------------------------------- */
